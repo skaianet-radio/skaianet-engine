@@ -6,7 +6,7 @@ This is a set of python2 scripts designed to back an ices 0.4 streaming client f
 
 * Install [ices 0.4](http://downloads.us.xiph.org/releases/ices/ices-0.4.tar.gz).  It's deprecated, but it does what we need it to do better than ices 2.x.
 * Copy config.py.dist to config.py and edit the file appropriately.
-* Copy radio.conf.dist to radio.conf and edit the file appropriately.
+* Copy ices.conf.dist to ices.conf and edit the file appropriately.
 * Make a MySQL database and populate it with extra/schema.sql  (This should be done automatically further down the developmental road.)
 * Execute $ ices -c radio.conf
 * Have a look at [skaianet-web](https://github.com/skaianet-radio/skaianet-web) if you're interested in using our web interface.
