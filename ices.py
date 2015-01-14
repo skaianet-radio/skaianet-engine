@@ -4,11 +4,11 @@
 #
 # This file is part of skaianet-engine.
 #
-# skaianet-engine is free software: you can redistribute it and/or 
+# skaianet-engine is free software: you can redistribute it and/or
 # modify it under the terms of the GNU General Public License as
-# published by the Free Software Foundation, either version 3 of the 
+# published by the Free Software Foundation, either version 3 of the
 # License, or (at your option) any later version.
-# 
+#
 # skaianet-engine is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
@@ -34,54 +34,56 @@ from mutagen.mp3 import MP3
 # If it works, it works, no guarantees.
 
 library = "/home/kitty/ices/library/"
-db = mysql.connector.connect(user=config.dbUser, password=config.dbPass, database=config.dbName)
+db = mysql.connector.connect(
+        user=config.dbUser,
+        password=config.dbPass,
+        database=config.dbName)
 intervalcount = 0
 
 def dprint (msg):
-	print '{} '.format(datetime.datetime.now().strftime("[%H:%M:%S]")) + msg
+    print '{} '.format(datetime.datetime.now().strftime("[%H:%M:%S]")) + msg
 
 def ices_init ():
-	dprint('Initializing...')
-	dprint('Checking Songs against DB')
-	for root,dirs,files in os.walk(library):
-		for file in files:
-			if file.endswith(".mp3"):
-				mp3file = os.path.join(root, file)
-				mp3cursor = db.cursor()
-				mp3query = ("SELECT id FROM library WHERE filepath=%(path)s")
-				mp3cursor.execute(mp3query, {'path': mp3file})
-				if not mp3cursor.fetchall():
-					print '{} Importing: {}'.format(datetime.datetime.now().strftime("[%H:%M:%S]"), mp3file)
-					mp3meta = EasyID3(mp3file)
-					print '     Title:  {}'.format(mp3meta["title"][0].encode('utf-8'))
-					print '     Artist: {}'.format(mp3meta["artist"][0].encode('utf-8'))
-					print '     Album:  {}'.format(mp3meta["album"][0].encode('utf-8'))
-					mp3update = db.cursor()
-					mp3updateq = ("INSERT INTO library "
-						      "(title, artist, album, filepath) "
-						      "VALUES (%(title)s, %(artist)s, %(album)s, %(filepath)s)")
-					mp3data = {
-						'title': mp3meta["title"][0].encode('utf-8'),
-						'artist': mp3meta["artist"][0].encode('utf-8'),
-						'album': mp3meta["album"][0].encode('utf-8'),
-						'filepath': mp3file }
-					mp3update.execute(mp3updateq, mp3data)
-					mp3update.close()
-				mp3cursor.close()
-	print '{} Checking DB against Songs'.format(datetime.datetime.now().strftime("[%H:%M:%S]"))
-	mp3libcursor = db.cursor()
-	mp3libcursor.execute("SELECT id,filepath FROM library")
-	mp3library = mp3libcursor.fetchall()
-	mp3libcursor.close()
-	for id,filepath in mp3library:
-		if not os.path.isfile(filepath):
-			print '{} Deleting: {}'.format(datetime.datetime.now().strftime("[%H:%M:%S]"), filepath)
-			mp3remove = db.cursor()
-			mp3remove.execute("DELETE FROM library WHERE id=%s", {id})
-			mp3remove.close()
-	db.commit()
-	print '{} Initialization complete.'.format(datetime.datetime.now().strftime("[%H:%M:%S]"))
-	return 1
+    dprint('Initializing...')
+    dprint('Checking Songs against DB')
+    for root,dirs,files in os.walk(library):
+        for file in files:
+            if file.endswith(".mp3"):
+                mp3file = os.path.join(root, file)
+                mp3cursor = db.cursor()
+                mp3query = ("SELECT id FROM library WHERE filepath=%(path)s")
+                mp3cursor.execute(mp3query, {'path': mp3file})
+                if not mp3cursor.fetchall():
+                    print '{} Importing: {}'.format(datetime.datetime.now().strftime("[%H:%M:%S]"), mp3file)
+                    mp3meta = EasyID3(mp3file)
+                    print '     Title:  {}'.format(mp3meta["title"][0].encode('utf-8'))
+                    print '     Artist: {}'.format(mp3meta["artist"][0].encode('utf-8'))
+                    print '     Album:  {}'.format(mp3meta["album"][0].encode('utf-8'))
+                    mp3update = db.cursor()
+                    mp3updateq = ("INSERT INTO library "
+                                  "(title, artist, album, filepath) "
+                                  "VALUES (%(title)s, %(artist)s, %(album)s, %(filepath)s)")
+                    mp3data = {'title': mp3meta["title"][0].encode('utf-8'),
+                               'artist': mp3meta["artist"][0].encode('utf-8'),
+                               'album': mp3meta["album"][0].encode('utf-8'),
+                               'filepath': mp3file }
+                    mp3update.execute(mp3updateq, mp3data)
+                    mp3update.close()
+                mp3cursor.close()
+    print '{} Checking DB against Songs'.format(datetime.datetime.now().strftime("[%H:%M:%S]"))
+    mp3libcursor = db.cursor()
+    mp3libcursor.execute("SELECT id,filepath FROM library")
+    mp3library = mp3libcursor.fetchall()
+    mp3libcursor.close()
+    for id,filepath in mp3library:
+        if not os.path.isfile(filepath):
+            print '{} Deleting: {}'.format(datetime.datetime.now().strftime("[%H:%M:%S]"), filepath)
+            mp3remove = db.cursor()
+            mp3remove.execute("DELETE FROM library WHERE id=%s", {id})
+            mp3remove.close()
+    db.commit()
+    print '{} Initialization complete.'.format(datetime.datetime.now().strftime("[%H:%M:%S]"))
+    return 1
 
 # Function called to shutdown your python enviroment.
 # Return 1 if ok, 0 if something went wrong.
