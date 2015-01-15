@@ -104,7 +104,7 @@ def ices_get_next ():
 		currentMp3 = {
 			"title": ["Skaianet Ad Hatorade"],
 			"artist": ["Advertisement"] }
-		return '/home/kitty/ices/inserts/Skaianet Ad Hatorade.mp3'
+		return '/home/kitty/ices/jingles/Skaianet Ad Hatorade.mp3'
 	dprint('Next Song')
 	reqCountC = db.cursor()
 	reqCountC.execute('SELECT * FROM requests LIMIT 1')
