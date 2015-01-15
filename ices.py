@@ -21,7 +21,6 @@
 from string import *
 import sys
 import os
-os.chdir(os.path.dirname(sys.argv[0]))
 import datetime
 import mysql.connector
 import config
