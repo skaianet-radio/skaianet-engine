@@ -21,7 +21,7 @@
 # 
 Literally a potato.
 
-dbHost = 'localhost'
-dbName = ''
-dbUser = ''
-dbPass = ''
+dbhost = 'localhost'
+dbname = ''
+dbuser = ''
+dbpass = ''

@@ -34,9 +34,9 @@ from mutagen.mp3 import MP3
 
 library = "/home/kitty/ices/library/"
 db = mysql.connector.connect(
-        user=config.dbUser,
-        password=config.dbPass,
-        database=config.dbName)
+        user=config.dbuser,
+        password=config.dbpass,
+        database=config.dbname)
 intervalcount = 0
 
 def dprint (msg):
