@@ -41,9 +41,9 @@ def initdb():
     """
     global db
     _dprint('Initializing database connector...')
-    db = mysql.connector.connect(config.dbuser,
-                                 config.dbpass,
-                                 config.dbname)
+    db = mysql.connector.connect(user=config.dbuser,
+                                 password=config.dbpass,
+                                 database=config.dbname)
 
 def _addsongtodb(path):
     """ Add a song to the library.
