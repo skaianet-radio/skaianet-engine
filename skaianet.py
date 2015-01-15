@@ -26,10 +26,19 @@ from mutagen.easyid3 import EasyID3
 global db
 
 def _dprint(msg):
+    """ Print a debug line.
+    This is a simple function.  If I got any more meta, I'd be telling
+    you about how this is a docstring.
+    """
     if config.debug is True:
         print (datetime.datetime.now().strftime("[%H:%M:%S] ") + msg)
 
 def initdb():
+    """ Initializes the database used for radio control.
+    Must be called on it's own at least once before anything that
+    calls the database is used.
+    ** SHOULD check for proper schema, but does not.
+    """
     global db
     _dprint('Initializing database connector...')
     db = mysql.connector.connect(config.dbuser,
@@ -37,6 +46,10 @@ def initdb():
                                  config.dbname)
 
 def _addsongtodb(path):
+    """ Add a song to the library.
+    Takes the path of an MP3 file, and then adds the path and metadata
+    to the library database for use in circulation or requests.
+    """
     _dprint('Importing: ' + path)
     songid3 = EasyID3(path)
     songmeta = {'title': songid3["title"][0].encode('utf-8'),
