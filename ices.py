@@ -22,7 +22,6 @@ from string import *
 import sys
 import os
 import datetime
-import mysql.connector
 import config
 import skaianet
 from mutagen.easyid3 import EasyID3
