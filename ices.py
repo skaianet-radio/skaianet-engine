@@ -24,6 +24,7 @@ import os
 import datetime
 import mysql.connector
 import config
+import skaianet
 from mutagen.easyid3 import EasyID3
 from mutagen.mp3 import MP3
 
@@ -33,23 +34,19 @@ from mutagen.mp3 import MP3
 # If it works, it works, no guarantees.
 
 library = "/home/kitty/ices/library/"
-db = mysql.connector.connect(
-        user=config.dbuser,
-        password=config.dbpass,
-        database=config.dbname)
 intervalcount = 0
 
 def dprint (msg):
     print '{} '.format(datetime.datetime.now().strftime("[%H:%M:%S]")) + msg
 
 def ices_init ():
-    dprint('Initializing...')
+    skaianet.initdb()
     dprint('Checking Songs against DB')
     for root,dirs,files in os.walk(library):
         for file in files:
             if file.endswith(".mp3"):
                 mp3file = os.path.join(root, file)
-                mp3cursor = db.cursor()
+                mp3cursor = skaianet.db.cursor()
                 mp3query = ("SELECT id FROM library WHERE filepath=%(path)s")
                 mp3cursor.execute(mp3query, {'path': mp3file})
                 if not mp3cursor.fetchall():
@@ -58,7 +55,7 @@ def ices_init ():
                     print '     Title:  {}'.format(mp3meta["title"][0].encode('utf-8'))
                     print '     Artist: {}'.format(mp3meta["artist"][0].encode('utf-8'))
                     print '     Album:  {}'.format(mp3meta["album"][0].encode('utf-8'))
-                    mp3update = db.cursor()
+                    mp3update = skaianet.db.cursor()
                     mp3updateq = ("INSERT INTO library "
                                   "(title, artist, album, filepath) "
                                   "VALUES (%(title)s, %(artist)s, %(album)s, %(filepath)s)")
@@ -70,17 +67,17 @@ def ices_init ():
                     mp3update.close()
                 mp3cursor.close()
     print '{} Checking DB against Songs'.format(datetime.datetime.now().strftime("[%H:%M:%S]"))
-    mp3libcursor = db.cursor()
+    mp3libcursor = skaianet.db.cursor()
     mp3libcursor.execute("SELECT id,filepath FROM library")
     mp3library = mp3libcursor.fetchall()
     mp3libcursor.close()
     for id,filepath in mp3library:
         if not os.path.isfile(filepath):
             print '{} Deleting: {}'.format(datetime.datetime.now().strftime("[%H:%M:%S]"), filepath)
-            mp3remove = db.cursor()
+            mp3remove = skaianet.db.cursor()
             mp3remove.execute("DELETE FROM library WHERE id=%s", {id})
             mp3remove.close()
-    db.commit()
+    skaianet.db.commit()
     print '{} Initialization complete.'.format(datetime.datetime.now().strftime("[%H:%M:%S]"))
     return 1
 
@@ -88,7 +85,7 @@ def ices_init ():
 # Return 1 if ok, 0 if something went wrong.
 def ices_shutdown ():
 	dprint('Shutting Down...')
-	db.close()
+	skaianet.db.close()
 	return 1
 
 # Function called to get the next filename to stream.
@@ -105,12 +102,12 @@ def ices_get_next ():
 			"artist": ["Advertisement"] }
 		return '/home/kitty/ices/jingles/Skaianet Ad Hatorade.mp3'
 	dprint('Next Song')
-	reqCountC = db.cursor()
+	reqCountC = skaianet.db.cursor()
 	reqCountC.execute('SELECT * FROM requests LIMIT 1')
 	reqPotato = reqCountC.fetchall()
 	reqCount = reqCountC.rowcount
 	reqCountC.close()
-	nextmp3 = db.cursor()
+	nextmp3 = skaianet.db.cursor()
 	reqname = ""
 	reqsrc = ""
 	if reqCount > 0:
@@ -126,12 +123,12 @@ def ices_get_next ():
 	nextmp3p = nextmp3.fetchall()[0]
 	nextmp3.close()
 	if reqCount > 0:
-		reqRemove = db.cursor()
+		reqRemove = skaianet.db.cursor()
 		reqRemove.execute("DELETE FROM requests WHERE id=%(reqid)s", {'reqid': reqPotato[0][0]})
 		reqRemove.close()
-		db.commit()
+		skaianet.db.commit()
 	currentMp3 = MP3(nextmp3p[1], ID3=EasyID3)
-	recentC = db.cursor()
+	recentC = skaianet.db.cursor()
 	recentQ = ("INSERT INTO recent "
 		   "(songid, title, artist, album, length, reqname, reqsrc, time) "
 		   "VALUES (%(songid)s, %(title)s, %(artist)s, %(album)s, %(length)s, %(reqname)s, %(reqsrc)s, CURRENT_TIMESTAMP())")
@@ -145,7 +142,7 @@ def ices_get_next ():
 		'reqsrc':  reqsrc }
 	recentC.execute(recentQ, recentD)
 	recentC.close()
-	db.commit()
+	skaianet.db.commit()
 	return '{}'.format(nextmp3p[1])
 
 # This function, if defined, returns the string you'd like used
