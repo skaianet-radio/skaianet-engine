@@ -40,7 +40,7 @@ def dprint (msg):
 
 def ices_init ():
     skaianet.initdb()
-    dprint('Checking Songs against DB')
+    skaianet._dprint('Checking Songs against DB')
     for root,dirs,files in os.walk(library):
         for file in files:
             if file.endswith(".mp3"):
@@ -49,35 +49,21 @@ def ices_init ():
                 mp3query = ("SELECT id FROM library WHERE filepath=%(path)s")
                 mp3cursor.execute(mp3query, {'path': mp3file})
                 if not mp3cursor.fetchall():
-                    print '{} Importing: {}'.format(datetime.datetime.now().strftime("[%H:%M:%S]"), mp3file)
-                    mp3meta = EasyID3(mp3file)
-                    print '     Title:  {}'.format(mp3meta["title"][0].encode('utf-8'))
-                    print '     Artist: {}'.format(mp3meta["artist"][0].encode('utf-8'))
-                    print '     Album:  {}'.format(mp3meta["album"][0].encode('utf-8'))
-                    mp3update = skaianet.db.cursor()
-                    mp3updateq = ("INSERT INTO library "
-                                  "(title, artist, album, filepath) "
-                                  "VALUES (%(title)s, %(artist)s, %(album)s, %(filepath)s)")
-                    mp3data = {'title': mp3meta["title"][0].encode('utf-8'),
-                               'artist': mp3meta["artist"][0].encode('utf-8'),
-                               'album': mp3meta["album"][0].encode('utf-8'),
-                               'filepath': mp3file }
-                    mp3update.execute(mp3updateq, mp3data)
-                    mp3update.close()
+                    skaianet._addsongtodb(mp3file)
                 mp3cursor.close()
-    print '{} Checking DB against Songs'.format(datetime.datetime.now().strftime("[%H:%M:%S]"))
+    skaianet._dprint('Checking DB against Songs')
     mp3libcursor = skaianet.db.cursor()
     mp3libcursor.execute("SELECT id,filepath FROM library")
     mp3library = mp3libcursor.fetchall()
     mp3libcursor.close()
     for id,filepath in mp3library:
         if not os.path.isfile(filepath):
-            print '{} Deleting: {}'.format(datetime.datetime.now().strftime("[%H:%M:%S]"), filepath)
+            skaianet._dprint('Deleting: ' + filepath)
             mp3remove = skaianet.db.cursor()
-            mp3remove.execute("DELETE FROM library WHERE id=%s", {id})
+            mp3remove.execute("DELETE FROM library WHERE id=%(id)s", {'id': id})
             mp3remove.close()
     skaianet.db.commit()
-    print '{} Initialization complete.'.format(datetime.datetime.now().strftime("[%H:%M:%S]"))
+    skaianet._dprint('Initialization complete.')
     return 1
 
 # Function called to shutdown your python enviroment.
