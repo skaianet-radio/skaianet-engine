@@ -58,3 +58,15 @@ def _addsongtodb(path):
     _dprint('    Title: ' + songmeta['title'])
     _dprint('   Artist: ' + songmeta['artist'])
     _dprint('    Album: ' + songmeta['album'])
+    insertcursor = db.cursor()
+    insertdata = {
+        'query': "INSERT INTO library "
+                 "(title, artist, album, filepath) "
+                 "VALUES (%(title)s, %(artist)s, %(album)s, %(filepath)s)",
+        'data': {'title': songmeta['title'],
+                 'artist': songmeta['artist'],
+                 'album': songmeta['album'],
+                 'filepath': path}}
+    insertcursor.execute(insertdata['query'], insertdata['data'])
+    insertcursor.close()
+    db.commit()
