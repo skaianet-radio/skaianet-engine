@@ -58,10 +58,7 @@ def ices_init ():
     mp3libcursor.close()
     for id,filepath in mp3library:
         if not os.path.isfile(filepath):
-            skaianet._dprint('Deleting: ' + filepath)
-            mp3remove = skaianet.db.cursor()
-            mp3remove.execute("DELETE FROM library WHERE id=%(id)s", {'id': id})
-            mp3remove.close()
+            skaianet._rmsongfromdb(id)
     skaianet.db.commit()
     skaianet._dprint('Initialization complete.')
     return 1
