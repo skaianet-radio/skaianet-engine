@@ -70,3 +70,14 @@ def _addsongtodb(path):
     insertcursor.execute(insertdata['query'], insertdata['data'])
     insertcursor.close()
     db.commit()
+
+def _rmsongfromdb(id):
+    """ Remove a song from the library.
+    Takes the ID number assigned to a song's database entry and removes
+    it from the database.
+    """
+    _dprint('Removing song ID #' + str(id))
+    removecursor = db.cursor()
+    removecursor.execute("DELETE FROM library WHERE id=%(id)s", {'id': id})
+    removecursor.close()
+    db.commit()
