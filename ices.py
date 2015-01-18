@@ -66,9 +66,8 @@ def ices_init ():
 # Function called to shutdown your python enviroment.
 # Return 1 if ok, 0 if something went wrong.
 def ices_shutdown ():
-	dprint('Shutting Down...')
-	skaianet.db.close()
-	return 1
+    skaianet.closedb()
+    return 1
 
 # Function called to get the next filename to stream.
 # Should return a string.

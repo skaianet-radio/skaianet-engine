@@ -45,6 +45,12 @@ def initdb():
                                  password=config.dbpass,
                                  database=config.dbname)
 
+def closedb():
+    _dprint('Saving changes to database...')
+    db.commit()
+    _dprint('Closing database...')
+    db.close()
+
 def _addsongtodb(path):
     """ Add a song to the library.
     Takes the path of an MP3 file, and then adds the path and metadata
