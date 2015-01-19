@@ -72,63 +72,63 @@ def ices_shutdown ():
 # Function called to get the next filename to stream.
 # Should return a string.
 def ices_get_next ():
-	global intervalcount
-	global currentMp3
-	intervalcount += 1
-	print intervalcount;
-	if intervalcount >= 5:
-		intervalcount = 0
-		currentMp3 = {
-			"title": ["Skaianet Ad Hatorade"],
-			"artist": ["Advertisement"] }
-		return '/home/kitty/ices/jingles/Skaianet Ad Hatorade.mp3'
-	dprint('Next Song')
-	reqCountC = skaianet.db.cursor()
-	reqCountC.execute('SELECT * FROM requests LIMIT 1')
-	reqPotato = reqCountC.fetchall()
-	reqCount = reqCountC.rowcount
-	reqCountC.close()
-	nextmp3 = skaianet.db.cursor()
-	reqname = ""
-	reqsrc = ""
-	if reqCount > 0:
-		print 'REQUEST THERE, NEED TO PROCESS'
-		nextmp3q = ("SELECT id,filepath FROM library WHERE id=%(song)s")
-		nextmp3.execute(nextmp3q, {'song': reqPotato[0][1]})
-		reqname = reqPotato[0][2]
-		reqsrc = reqPotato[0][3]
-	else:
-		print 'NO REQUEST, MOVING ON'
-		nextmp3q = ("SELECT id,filepath FROM library WHERE autoplay=1 ORDER BY RAND() LIMIT 1")
-		nextmp3.execute(nextmp3q)
-	nextmp3p = nextmp3.fetchall()[0]
-	nextmp3.close()
-	if reqCount > 0:
-		reqRemove = skaianet.db.cursor()
-		reqRemove.execute("DELETE FROM requests WHERE id=%(reqid)s", {'reqid': reqPotato[0][0]})
-		reqRemove.close()
-		skaianet.db.commit()
-	currentMp3 = MP3(nextmp3p[1], ID3=EasyID3)
-	recentC = skaianet.db.cursor()
-	recentQ = ("INSERT INTO recent "
-		   "(songid, title, artist, album, length, reqname, reqsrc, time) "
-		   "VALUES (%(songid)s, %(title)s, %(artist)s, %(album)s, %(length)s, %(reqname)s, %(reqsrc)s, CURRENT_TIMESTAMP())")
-	recentD = {
-		'songid':  nextmp3p[0],
-		'title':   currentMp3["title"][0].encode('utf-8'),
-		'artist':  currentMp3["artist"][0].encode('utf-8'),
-		'album':   currentMp3["album"][0].encode('utf-8'),
-		'length':  round(currentMp3.info.length),
-		'reqname': reqname,
-		'reqsrc':  reqsrc }
-	recentC.execute(recentQ, recentD)
-	recentC.close()
-	skaianet.db.commit()
-	return '{}'.format(nextmp3p[1])
+    global intervalcount
+    global currentMp3
+    intervalcount += 1
+    print intervalcount;
+    if intervalcount >= 5:
+        intervalcount = 0
+        currentMp3 = {
+            "title": ["Skaianet Ad Hatorade"],
+            "artist": ["Advertisement"] }
+        return '/home/kitty/ices/jingles/Skaianet Ad Hatorade.mp3'
+    dprint('Next Song')
+    reqCountC = skaianet.db.cursor()
+    reqCountC.execute('SELECT * FROM requests LIMIT 1')
+    reqPotato = reqCountC.fetchall()
+    reqCount = reqCountC.rowcount
+    reqCountC.close()
+    nextmp3 = skaianet.db.cursor()
+    reqname = ""
+    reqsrc = ""
+    if reqCount > 0:
+        print 'REQUEST THERE, NEED TO PROCESS'
+        nextmp3q = ("SELECT id,filepath FROM library WHERE id=%(song)s")
+        nextmp3.execute(nextmp3q, {'song': reqPotato[0][1]})
+        reqname = reqPotato[0][2]
+        reqsrc = reqPotato[0][3]
+    else:
+        print 'NO REQUEST, MOVING ON'
+        nextmp3q = ("SELECT id,filepath FROM library WHERE autoplay=1 ORDER BY RAND() LIMIT 1")
+        nextmp3.execute(nextmp3q)
+    nextmp3p = nextmp3.fetchall()[0]
+    nextmp3.close()
+    if reqCount > 0:
+        reqRemove = skaianet.db.cursor()
+        reqRemove.execute("DELETE FROM requests WHERE id=%(reqid)s", {'reqid': reqPotato[0][0]})
+        reqRemove.close()
+        skaianet.db.commit()
+    currentMp3 = MP3(nextmp3p[1], ID3=EasyID3)
+    recentC = skaianet.db.cursor()
+    recentQ = ("INSERT INTO recent "
+               "(songid, title, artist, album, length, reqname, reqsrc, time) "
+               "VALUES (%(songid)s, %(title)s, %(artist)s, %(album)s, %(length)s, %(reqname)s, %(reqsrc)s, CURRENT_TIMESTAMP())")
+    recentD = {
+        'songid':  nextmp3p[0],
+        'title':   currentMp3["title"][0].encode('utf-8'),
+        'artist':  currentMp3["artist"][0].encode('utf-8'),
+        'album':   currentMp3["album"][0].encode('utf-8'),
+        'length':  round(currentMp3.info.length),
+        'reqname': reqname,
+        'reqsrc':  reqsrc }
+    recentC.execute(recentQ, recentD)
+    recentC.close()
+    skaianet.db.commit()
+    return '{}'.format(nextmp3p[1])
 
 # This function, if defined, returns the string you'd like used
 # as metadata (ie for title streaming) for the current song. You may
 # return null to indicate that the file comment should be used.
 def ices_get_metadata ():
-	print '{} Title: {} - {}'.format(datetime.datetime.now().strftime("[%H:%M:%S]"), currentMp3["artist"][0].encode('utf-8'), currentMp3["title"][0].encode('utf-8'))
-	return "{0} - {1}".format(currentMp3["artist"][0].encode('utf-8'), currentMp3["title"][0].encode('utf-8'))
+    print '{} Title: {} - {}'.format(datetime.datetime.now().strftime("[%H:%M:%S]"), currentMp3["artist"][0].encode('utf-8'), currentMp3["title"][0].encode('utf-8'))
+    return "{0} - {1}".format(currentMp3["artist"][0].encode('utf-8'), currentMp3["title"][0].encode('utf-8'))
