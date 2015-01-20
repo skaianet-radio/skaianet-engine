@@ -25,13 +25,15 @@ from mutagen.easyid3 import EasyID3
 
 global db
 
+
 def _dprint(msg):
     """ Print a debug line.
     This is a simple function.  If I got any more meta, I'd be telling
     you about how this is a docstring.
     """
     if config.debug is True:
-        print (datetime.datetime.now().strftime("[%H:%M:%S] ") + msg)
+        print(datetime.datetime.now().strftime("[%H:%M:%S] ") + msg)
+
 
 def initdb():
     """ Initializes the database used for radio control.
@@ -45,11 +47,13 @@ def initdb():
                                  password=config.dbpass,
                                  database=config.dbname)
 
+
 def closedb():
     _dprint('Saving changes to database...')
     db.commit()
     _dprint('Closing database...')
     db.close()
+
 
 def _addsongtodb(path):
     """ Add a song to the library.
@@ -76,6 +80,7 @@ def _addsongtodb(path):
     insertcursor.execute(insertdata['query'], insertdata['data'])
     insertcursor.close()
     db.commit()
+
 
 def _rmsongfromdb(id):
     """ Remove a song from the library.
