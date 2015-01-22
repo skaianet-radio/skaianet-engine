@@ -130,5 +130,5 @@ def ices_get_next ():
 # as metadata (ie for title streaming) for the current song. You may
 # return null to indicate that the file comment should be used.
 def ices_get_metadata ():
-    print '{} Title: {} - {}'.format(datetime.datetime.now().strftime("[%H:%M:%S]"), currentMp3["artist"][0].encode('utf-8'), currentMp3["title"][0].encode('utf-8'))
+    skaianet._dprint('Title: ' + currentMp3["artist"][0].encode('utf-8')+ ' - ' + currentMp3["title"][0].encode('utf-8'))
     return "{0} - {1}".format(currentMp3["artist"][0].encode('utf-8'), currentMp3["title"][0].encode('utf-8'))
