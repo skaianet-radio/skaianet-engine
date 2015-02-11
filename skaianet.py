@@ -127,6 +127,10 @@ def _rmsongfromdb(id):
 
 
 def _checkifrecent(id, range):
+    """ Checks if a song was recently played.
+    Takes the song ID number and a range of how many historic plays to
+    compare the specified song against as arguments.
+    """
     recentcursor = db.cursor()
     recentcursor.execute(
         "SELECT songid FROM recent ORDER BY id DESC LIMIT %(range)s",
