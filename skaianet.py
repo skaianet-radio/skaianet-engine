@@ -124,3 +124,16 @@ def _rmsongfromdb(id):
     removecursor.execute("DELETE FROM library WHERE id=%(id)s", {'id': id})
     removecursor.close()
     db.commit()
+
+
+def _checkifrecent(id, range):
+    recentcursor = db.cursor()
+    recentcursor.execute(
+        "SELECT songid FROM recent ORDER BY id DESC LIMIT %(range)s",
+        {'range': range})
+    recents = recentcursor.fetchall()
+    recentcursor.close()
+    for songid in recents:
+        if songid[0] == id:
+            return True
+    return False
