@@ -20,7 +20,6 @@
 
 from string import *
 import sys
-import os
 import datetime
 import config
 import skaianet
@@ -31,27 +30,7 @@ intervalcount = 0
 
 def ices_init ():
     skaianet.initdb()
-    skaianet._dprint('Checking Songs against DB')
-    for root,dirs,files in os.walk(config.librarypath):
-        for file in files:
-            if file.endswith(".mp3"):
-                mp3file = os.path.join(root, file)
-                mp3cursor = skaianet.db.cursor()
-                mp3query = ("SELECT id FROM library WHERE filepath=%(path)s")
-                mp3cursor.execute(mp3query, {'path': mp3file})
-                if not mp3cursor.fetchall():
-                    skaianet._addsongtodb(mp3file)
-                mp3cursor.close()
-    skaianet._dprint('Checking DB against Songs')
-    mp3libcursor = skaianet.db.cursor()
-    mp3libcursor.execute("SELECT id,filepath FROM library")
-    mp3library = mp3libcursor.fetchall()
-    mp3libcursor.close()
-    for id,filepath in mp3library:
-        if not os.path.isfile(filepath):
-            skaianet._rmsongfromdb(id)
-    skaianet.db.commit()
-    skaianet._dprint('Initialization complete.')
+    skaianet.checkdb()
     return 1
 
 # Function called to shutdown your python enviroment.

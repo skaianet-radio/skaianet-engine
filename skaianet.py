@@ -18,6 +18,7 @@
 # along with skaianet-engine.  If not, see <http://www.gnu.org/licenses/>.
 ###
 
+import os
 import config
 import datetime
 import mysql.connector
@@ -54,6 +55,29 @@ def closedb():
     db.commit()
     _dprint('Closing database...')
     db.close()
+
+
+def checkdb():
+    _dprint('Checking Songs against DB')
+    for root,dirs,files in os.walk(config.librarypath):
+        for file in files:
+            if file.endswith(".mp3"):
+                mp3file = os.path.join(root, file)
+                mp3cursor = db.cursor()
+                mp3query = ("SELECT id FROM library WHERE filepath=%(path)s")
+                mp3cursor.execute(mp3query, {'path': mp3file})
+                if not mp3cursor.fetchall():
+                    _addsongtodb(mp3file)
+                mp3cursor.close()
+    _dprint('Checking DB against Songs')
+    mp3libcursor = db.cursor()
+    mp3libcursor.execute("SELECT id,filepath FROM library")
+    mp3library = mp3libcursor.fetchall()
+    mp3libcursor.close()
+    for id,filepath in mp3library:
+        if not os.path.isfile(filepath):
+            _rmsongfromdb(id)
+    db.commit()
 
 
 def _addsongtodb(path):
