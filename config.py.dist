@@ -24,3 +24,5 @@ dbuser = ''
 dbpass = ''
 
 librarypath = '/var/music/'
+
+debug = True
