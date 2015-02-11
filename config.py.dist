@@ -18,10 +18,9 @@
 # along with skaianet-engine.  If not, see <http://www.gnu.org/licenses/>.
 ###
 
-# 
-Literally a potato.
-
 dbhost = 'localhost'
 dbname = ''
 dbuser = ''
 dbpass = ''
+
+librarypath = '/var/music/'

@@ -27,13 +27,12 @@ import skaianet
 from mutagen.easyid3 import EasyID3
 from mutagen.mp3 import MP3
 
-library = "/home/kitty/ices/library/"
 intervalcount = 0
 
 def ices_init ():
     skaianet.initdb()
     skaianet._dprint('Checking Songs against DB')
-    for root,dirs,files in os.walk(library):
+    for root,dirs,files in os.walk(config.librarypath):
         for file in files:
             if file.endswith(".mp3"):
                 mp3file = os.path.join(root, file)
