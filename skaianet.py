@@ -46,6 +46,7 @@ def initdb():
     db = mysql.connector.connect(user=config.dbuser,
                                  password=config.dbpass,
                                  database=config.dbname)
+    _dprint('NOT Checking schema... (Fix me!)')
 
 
 def closedb():
