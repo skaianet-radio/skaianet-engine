@@ -51,6 +51,9 @@ def initdb():
 
 
 def closedb():
+    """ Ensures all changes are saved before closing the database.
+    Should be called only when all DB actions are done.
+    """
     _dprint('Saving changes to database...')
     db.commit()
     _dprint('Closing database...')
@@ -58,6 +61,10 @@ def closedb():
 
 
 def checkdb():
+    """ Check the database against the song library for consistency.
+    Ensures that all songs in the database match a file and also that
+    all files have a database entry.
+    """
     _dprint('Checking Songs against DB')
     for root,dirs,files in os.walk(config.librarypath):
         for file in files:
