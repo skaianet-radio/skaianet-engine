@@ -27,11 +27,6 @@ import skaianet
 from mutagen.easyid3 import EasyID3
 from mutagen.mp3 import MP3
 
-# - Kitty's Radio Script -
-#
-# You're about to embark on an amazing-- oh who cares.
-# If it works, it works, no guarantees.
-
 library = "/home/kitty/ices/library/"
 intervalcount = 0
 
