@@ -30,9 +30,6 @@ from mutagen.mp3 import MP3
 library = "/home/kitty/ices/library/"
 intervalcount = 0
 
-def dprint (msg):
-    print '{} '.format(datetime.datetime.now().strftime("[%H:%M:%S]")) + msg
-
 def ices_init ():
     skaianet.initdb()
     skaianet._dprint('Checking Songs against DB')
@@ -77,7 +74,7 @@ def ices_get_next ():
             "title": ["Skaianet Ad Hatorade"],
             "artist": ["Advertisement"] }
         return '/home/kitty/ices/jingles/Skaianet Ad Hatorade.mp3'
-    dprint('Next Song')
+    skaianet._dprint('Next Song')
     reqCountC = skaianet.db.cursor()
     reqCountC.execute('SELECT * FROM requests LIMIT 1')
     reqPotato = reqCountC.fetchall()
