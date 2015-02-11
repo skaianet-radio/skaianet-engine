@@ -66,7 +66,7 @@ def checkdb():
     all files have a database entry.
     """
     _dprint('Checking Songs against DB')
-    for root,dirs,files in os.walk(config.librarypath):
+    for root, dirs, files in os.walk(config.librarypath):
         for file in files:
             if file.endswith(".mp3"):
                 mp3file = os.path.join(root, file)
@@ -81,7 +81,7 @@ def checkdb():
     mp3libcursor.execute("SELECT id,filepath FROM library")
     mp3library = mp3libcursor.fetchall()
     mp3libcursor.close()
-    for id,filepath in mp3library:
+    for id, filepath in mp3library:
         if not os.path.isfile(filepath):
             _rmsongfromdb(id)
     db.commit()
