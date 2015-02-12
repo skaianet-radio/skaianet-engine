@@ -28,29 +28,28 @@ from mutagen.mp3 import MP3
 
 intervalcount = 0
 
-def ices_init ():
+
+def ices_init():
     skaianet.initdb()
     skaianet.checkdb()
     return 1
 
-# Function called to shutdown your python enviroment.
-# Return 1 if ok, 0 if something went wrong.
-def ices_shutdown ():
+
+def ices_shutdown():
     skaianet.closedb()
     return 1
 
-# Function called to get the next filename to stream.
-# Should return a string.
-def ices_get_next ():
+
+def ices_get_next():
     global intervalcount
     global currentMp3
     intervalcount += 1
-    print intervalcount;
+    print intervalcount
     if intervalcount >= 5:
         intervalcount = 0
         currentMp3 = {
             "title": ["Skaianet Ad Hatorade"],
-            "artist": ["Advertisement"] }
+            "artist": ["Advertisement"]}
         return '/home/kitty/ices/jingles/Skaianet Ad Hatorade.mp3'
     skaianet._dprint('Next Song')
     reqCountC = skaianet.db.cursor()
@@ -90,7 +89,7 @@ def ices_get_next ():
         'album':   currentMp3["album"][0].encode('utf-8'),
         'length':  round(currentMp3.info.length),
         'reqname': reqname,
-        'reqsrc':  reqsrc }
+        'reqsrc':  reqsrc}
     recentC.execute(recentQ, recentD)
     recentC.close()
     skaianet.db.commit()
