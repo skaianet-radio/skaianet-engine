@@ -68,20 +68,26 @@ def ices_get_next():
         reqsrc = reqPotato[0][3]
     else:
         print 'NO REQUEST, MOVING ON'
-        nextmp3q = ("SELECT id,filepath FROM library WHERE autoplay=1 ORDER BY RAND() LIMIT 1")
+        nextmp3q = (
+            "SELECT id,filepath FROM library WHERE autoplay=1"
+            " ORDER BY RAND() LIMIT 1")
         nextmp3.execute(nextmp3q)
     nextmp3p = nextmp3.fetchall()[0]
     nextmp3.close()
     if reqCount > 0:
         reqRemove = skaianet.db.cursor()
-        reqRemove.execute("DELETE FROM requests WHERE id=%(reqid)s", {'reqid': reqPotato[0][0]})
+        reqRemove.execute(
+            "DELETE FROM requests WHERE id=%(reqid)s",
+            {'reqid': reqPotato[0][0]})
         reqRemove.close()
         skaianet.db.commit()
     currentMp3 = MP3(nextmp3p[1], ID3=EasyID3)
     recentC = skaianet.db.cursor()
-    recentQ = ("INSERT INTO recent "
-               "(songid, title, artist, album, length, reqname, reqsrc, time) "
-               "VALUES (%(songid)s, %(title)s, %(artist)s, %(album)s, %(length)s, %(reqname)s, %(reqsrc)s, CURRENT_TIMESTAMP())")
+    recentQ = (
+        "INSERT INTO recent "
+        "(songid, title, artist, album, length, reqname, reqsrc, time) "
+        "VALUES (%(songid)s, %(title)s, %(artist)s, %(album)s, %(length)s, "
+        "%(reqname)s, %(reqsrc)s, CURRENT_TIMESTAMP())")
     recentD = {
         'songid':  nextmp3p[0],
         'title':   currentMp3["title"][0].encode('utf-8'),
