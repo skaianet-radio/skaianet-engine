@@ -82,23 +82,12 @@ def ices_get_next():
         reqRemove.close()
         skaianet.db.commit()
     currentMp3 = MP3(nextmp3p[1], ID3=EasyID3)
-    recentC = skaianet.db.cursor()
-    recentQ = (
-        "INSERT INTO recent "
-        "(songid, title, artist, album, length, reqname, reqsrc, time) "
-        "VALUES (%(songid)s, %(title)s, %(artist)s, %(album)s, %(length)s, "
-        "%(reqname)s, %(reqsrc)s, CURRENT_TIMESTAMP())")
-    recentD = {
-        'songid':  nextmp3p[0],
-        'title':   currentMp3["title"][0].encode('utf-8'),
-        'artist':  currentMp3["artist"][0].encode('utf-8'),
-        'album':   currentMp3["album"][0].encode('utf-8'),
-        'length':  round(currentMp3.info.length),
-        'reqname': reqname,
-        'reqsrc':  reqsrc}
-    recentC.execute(recentQ, recentD)
-    recentC.close()
-    skaianet.db.commit()
+    skaianet.setplaying(
+        nextmp3p[0],
+        currentMp3["title"][0].encode('utf-8'),
+        currentMp3["artist"][0].encode('utf-8'),
+        currentMp3["album"][0].encode('utf-8'),
+        round(currentMp3.info.length))
     return '{}'.format(nextmp3p[1])
 
 
