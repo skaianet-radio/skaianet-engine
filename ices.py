@@ -19,8 +19,6 @@
 ###
 
 from string import *
-#import sys
-#import datetime
 import skaianet
 
 intervalcount = 0
