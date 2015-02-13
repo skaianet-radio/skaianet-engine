@@ -22,6 +22,7 @@ import os
 import config
 import datetime
 import mysql.connector
+import random
 from mutagen.easyid3 import EasyID3
 from mutagen.mp3 import MP3
 
@@ -249,3 +250,22 @@ def getrequest():
         'length': reqmeta['length'],
         'reqname': reqdata[1],
         'reqsrc': reqdata[2]}
+
+
+def getjingle():
+    jinglelist = []
+    for root, dirs, files in os.walk(config.jinglepath):
+        for file in files:
+            if file.endswith(".mp3"):
+                jinglelist.append(file)
+    jinglepath = config.jinglepath + random.choice(jinglelist)
+    jinglemeta = _getmp3meta(jinglepath)
+    return {
+        'id': 0,
+        'path': jinglepath,
+        'title': 'Advertisement',
+        'artist': 'Advertisement',
+        'album': 'Advertisement',
+        'length': jinglemeta['length'],
+        'reqname': '',
+        'reqsrc': ''}

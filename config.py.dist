@@ -24,5 +24,6 @@ dbuser = ''
 dbpass = ''
 
 librarypath = '/var/music/'
+jinglepath = '/var/jingles/'
 
 debug = True
