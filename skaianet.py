@@ -198,3 +198,25 @@ def _getmp3meta(path):
         'artist': mp3meta['artist'][0].encode('utf-8'),
         'album': mp3meta['album'][0].encode('utf-8'),
         'length': round(mp3meta.info.length)}
+
+
+def getrandomsong():
+    while True:
+        randcursor = db.cursor()
+        randcursor.execute("SELECT id,filepath FROM library WHERE autoplay=1"
+                           " ORDER BY RAND() LIMIT 1")
+        randresult = randcursor.fetchall()[0]
+        randcursor.close()
+        db.commit()
+        if _checkifrecent(randresult[0], 10):
+            _dprint('Repeat track found, re-randomizing...')
+        else:
+            break
+    randmeta = _getmp3meta(randresult[1])
+    return {
+        'id': randresult[0],
+        'path': randresult[1],
+        'title': randmeta['title'],
+        'artist': randmeta['artist'],
+        'album': randmeta['album'],
+        'length': randmeta['length']}
