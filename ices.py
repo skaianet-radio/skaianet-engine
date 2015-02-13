@@ -19,12 +19,9 @@
 ###
 
 from string import *
-import sys
-import datetime
-import config
+#import sys
+#import datetime
 import skaianet
-from mutagen.easyid3 import EasyID3
-from mutagen.mp3 import MP3
 
 intervalcount = 0
 
@@ -48,8 +45,8 @@ def ices_get_next():
     if intervalcount >= 5:
         intervalcount = 0
         currentmp3 = {
-            "title": ["Skaianet Ad Hatorade"],
-            "artist": ["Advertisement"]}
+            "title": "Skaianet Ad Hatorade",
+            "artist": "Advertisement"}
         return '/home/kitty/ices/jingles/Skaianet Ad Hatorade.mp3'
     if skaianet.requestqueued():
         currentmp3 = skaianet.getrequest()
