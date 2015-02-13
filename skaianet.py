@@ -145,6 +145,12 @@ def _checkifrecent(id, range):
 
 def setplaying(songid, title, artist, album, length,
                reqname='', reqsrc=''):
+    """ Adds a song to the recently played database.
+    This is assuming that this function is called when the song starts
+    playing so that the timing can be accurate for linked functions.
+    Takes arguments of the songs DB number, title, album, artist,
+    length in seconds, and optionally, the person requesting the song.
+    """
     setcursor = db.cursor()
     setdata = {
         'query': "INSERT INTO recent "
