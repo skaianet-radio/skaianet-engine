@@ -219,4 +219,33 @@ def getrandomsong():
         'title': randmeta['title'],
         'artist': randmeta['artist'],
         'album': randmeta['album'],
-        'length': randmeta['length']}
+        'length': randmeta['length'],
+        'reqname': '',
+        'reqsrc': ''}
+
+
+def getrequest():
+    reqcursor = db.cursor()
+    reqcursor.execute("SELECT reqid,reqname,reqsrc,id FROM requests LIMIT 1")
+    reqdata = reqcursor.fetchall()[0]
+    reqcursor.close()
+    libcursor = db.cursor()
+    libcursor.execute("SELECT id,filepath FROM library WHERE id=%(song)s",
+                      {'song': reqdata[0]})
+    libdata = libcursor.fetchall()[0]
+    libcursor.close()
+    reqmeta = _getmp3meta(libdata[1])
+    reqrmcursor = db.cursor()
+    reqrmcursor.execute("DELETE FROM requests WHERE id=%(id)s",
+                        {'id': reqdata[3]})
+    reqrmcursor.close()
+    db.commit()
+    return {
+        'id': reqdata[0],
+        'path': libdata[1],
+        'title': reqmeta['title'],
+        'artist': reqmeta['artist'],
+        'album': reqmeta['album'],
+        'length': reqmeta['length'],
+        'reqname': reqdata[1],
+        'reqsrc': reqdata[2]}
