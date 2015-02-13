@@ -169,3 +169,22 @@ def setplaying(songid, title, artist, album, length,
     setcursor.execute(setdata['query'], setdata['data'])
     setcursor.close()
     db.commit()
+
+
+def requestqueued():
+    """ Checks if there is a request waiting to be processed.
+    Takes no arguments, returns True or False.
+    """
+    _dprint('Checking for requests...')
+    reqcheckcursor = db.cursor()
+    reqcheckcursor.execute('SELECT * FROM requests LIMIT 1')
+    reqcheckcursor.fetchall()
+    reqcount = reqcheckcursor.rowcount
+    reqcheckcursor.close()
+    db.commit()
+    if reqcount > 0:
+        _dprint('Request has been found.')
+        return True
+    else:
+        _dprint('No request is present.')
+        return False
