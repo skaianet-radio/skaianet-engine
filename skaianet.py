@@ -141,3 +141,25 @@ def _checkifrecent(id, range):
         if songid[0] == id:
             return True
     return False
+
+
+def setplaying(songid, title, artist, album, length,
+               reqname='', reqsrc=''):
+    setcursor = db.cursor()
+    setdata = {
+        'query': "INSERT INTO recent "
+                 "(songid, title, artist, album, length, "
+                 "reqname, reqsrc, time) "
+                 "VALUES (%(songid)s, %(title)s, %(artist)s,"
+                 "%(album)s, %(length)s, "
+                 "%(reqname)s, %(reqsrc)s, CURRENT_TIMESTAMP())",
+        'data': {'songid': songid,
+                 'title': title,
+                 'artist': artist,
+                 'album': album,
+                 'length': length,
+                 'reqname': reqname,
+                 'reqsrc': reqsrc}}
+    setcursor.execute(setdata['query'], setdata['data'])
+    setcursor.close()
+    db.commit()
