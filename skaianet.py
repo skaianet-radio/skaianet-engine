@@ -23,6 +23,7 @@ import config
 import datetime
 import mysql.connector
 from mutagen.easyid3 import EasyID3
+from mutagen.mp3 import MP3
 
 global db
 
@@ -188,3 +189,12 @@ def requestqueued():
     else:
         _dprint('No request is present.')
         return False
+
+
+def _getmp3meta(path):
+    mp3meta = MP3(path, ID3=EasyID3)
+    return {
+        'title': mp3meta['title'][0].encode('utf-8'),
+        'artist': mp3meta['artist'][0].encode('utf-8'),
+        'album': mp3meta['album'][0].encode('utf-8'),
+        'length': round(mp3meta.info.length)}
