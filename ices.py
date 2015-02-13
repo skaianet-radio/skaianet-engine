@@ -42,9 +42,6 @@ def ices_get_next():
     print intervalcount
     if intervalcount >= 5:
         intervalcount = 0
-#        currentmp3 = {
-#            "title": "Skaianet Ad Hatorade",
-#            "artist": "Advertisement"}
         currentmp3 = skaianet.getjingle()
         return '{}'.format(currentmp3["path"])
     if skaianet.requestqueued():
