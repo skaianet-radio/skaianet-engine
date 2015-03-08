@@ -213,7 +213,6 @@ def getrandomsong():
             _dprint('Repeat track found, re-randomizing...')
         else:
             break
-    print randresult
     randmeta = _getmp3meta(randresult[1])
     return {
         'id': randresult[0],
