@@ -204,7 +204,7 @@ def _getmp3meta(path):
 def getrandomsong():
     while True:
         randcursor = db.cursor()
-        randcursor.execute("SELECT id,filepath FROM library WHERE autoplay=1"
+        randcursor.execute("SELECT id,filepath,title,artist,album FROM library WHERE autoplay=1"
                            " ORDER BY RAND() LIMIT 1")
         randresult = randcursor.fetchall()[0]
         randcursor.close()
@@ -213,13 +213,14 @@ def getrandomsong():
             _dprint('Repeat track found, re-randomizing...')
         else:
             break
+    print randresult
     randmeta = _getmp3meta(randresult[1])
     return {
         'id': randresult[0],
         'path': randresult[1],
-        'title': randmeta['title'],
-        'artist': randmeta['artist'],
-        'album': randmeta['album'],
+        'title': randresult[2],
+        'artist': randresult[3],
+        'album': randresult[4],
         'length': randmeta['length'],
         'reqname': '',
         'reqsrc': ''}
@@ -231,7 +232,7 @@ def getrequest():
     reqdata = reqcursor.fetchall()[0]
     reqcursor.close()
     libcursor = db.cursor()
-    libcursor.execute("SELECT id,filepath FROM library WHERE id=%(song)s",
+    libcursor.execute("SELECT id,filepath,title,artist,album FROM library WHERE id=%(song)s",
                       {'song': reqdata[0]})
     libdata = libcursor.fetchall()[0]
     libcursor.close()
@@ -244,9 +245,9 @@ def getrequest():
     return {
         'id': reqdata[0],
         'path': libdata[1],
-        'title': reqmeta['title'],
-        'artist': reqmeta['artist'],
-        'album': reqmeta['album'],
+        'title': libdata[2],
+        'artist': libdata[3],
+        'album': libdata[4],
         'length': reqmeta['length'],
         'reqname': reqdata[1],
         'reqsrc': reqdata[2]}
